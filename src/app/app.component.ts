@@ -1,12 +1,24 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, computed, signal } from '@angular/core';
+
+import { DUMMY_USERS } from './dummy-users';
+import { UserComponent } from './user/user.component';
+import { HeaderComponent } from './header/header.component';
+import { TasksComponent } from './tasks/tasks.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [HeaderComponent, UserComponent, TasksComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
 export class AppComponent {
-  title = 'easy-task';
+  users = signal(DUMMY_USERS);
+  selectedId = signal<string>('');
+  selectedUser = computed(
+    () => this.users().find((user) => user.id === this.selectedId())!
+  );
+
+  onUserSelect(id: string) {
+    this.selectedId.set(id);
+  }
 }
